@@ -9,7 +9,6 @@
 
 ## Overview
 
-JobGuard is an AI-powered fake job alert detector with **Telugu + English** support. Paste any job posting from WhatsApp, Telegram, or email and get an instant **FAKE / REAL** verdict with confidence scores, red flag analysis, and bilingual explanations.
 
 ---
 
