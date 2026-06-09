@@ -31,6 +31,27 @@ class Token(BaseModel):
     user: UserOut
 
 
+class UserStatsResponse(BaseModel):
+    total_checks: int
+    fake_detected: int
+    real_detected: int
+    reports_submitted: int
+
+
+class PredictionHistoryItem(BaseModel):
+    id: int
+    text: str
+    label: str
+    confidence: float
+    fake_probability: float
+    real_probability: float
+    red_flags_count: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class PredictRequest(BaseModel):
     text: str = Field(min_length=10, max_length=10000)
 

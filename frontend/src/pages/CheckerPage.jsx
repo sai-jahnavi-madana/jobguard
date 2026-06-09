@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api } from "../api";
 import { SAMPLES } from "../constants";
 import { shareOnWhatsApp } from "../utils/whatsapp";
+import ConnectionError from "../components/ConnectionError";
 
 export default function CheckerPage() {
   const [text, setText] = useState("");
@@ -19,7 +20,7 @@ export default function CheckerPage() {
       const data = await api.predict(text);
       setResult(data);
     } catch {
-      setError("Could not connect to backend. Make sure FastAPI is running on port 8000.");
+      setError("connection");
     }
     setLoading(false);
   };
@@ -69,7 +70,7 @@ export default function CheckerPage() {
         </div>
       )}
 
-      {error && <div className="error-banner">⚠️ {error}</div>}
+      {error === "connection" && <ConnectionError onRetry={check} />}
 
       {result && (
         <div className={`result-card ${result.label.toLowerCase()}`}>

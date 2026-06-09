@@ -5,6 +5,7 @@ const TABS = [
   { to: "/", label: "Check Job", end: true },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/report", label: "Report Scam" },
+  { to: "/about", label: "About" },
 ];
 
 export default function Nav() {
@@ -45,7 +46,12 @@ export default function Nav() {
 
         {user ? (
           <div className="nav-user">
-            <span>{user.name}</span>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) => `nav-profile ${isActive ? "active" : ""}`}
+            >
+              {user.name}
+            </NavLink>
             <button type="button" className="nav-logout" onClick={handleLogout}>
               Logout
             </button>

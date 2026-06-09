@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { api } from "../api";
 import { SCAM_PATTERNS } from "../constants";
+import ConnectionError from "../components/ConnectionError";
+import HelplineBanner from "../components/HelplineBanner";
 
 export default function ReportPage() {
   const [form, setForm] = useState({ text: "", company: "", city: "" });
@@ -19,7 +21,7 @@ export default function ReportPage() {
       setSuccess(`Report #${data.id} submitted. Thank you for helping protect others!`);
       setForm({ text: "", company: "", city: "" });
     } catch {
-      setError("Could not submit report. Is the backend running?");
+      setError("connection");
     }
     setLoading(false);
   };
@@ -34,7 +36,9 @@ export default function ReportPage() {
       </div>
 
       {success && <div className="success-banner">✅ {success}</div>}
-      {error && <div className="error-banner">⚠️ {error}</div>}
+      {error === "connection" && <ConnectionError message="Could not submit report" onRetry={submit} />}
+
+      <HelplineBanner compact />
 
       <div className="card">
         <div className="form-group">

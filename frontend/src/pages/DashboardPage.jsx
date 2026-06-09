@@ -1,17 +1,24 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../api";
+import ConnectionError from "../components/ConnectionError";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const loadStats = useCallback(() => {
+    setLoading(true);
+    setError(null);
     api.stats()
       .then(setStats)
-      .catch(() => setError("Cannot load stats — is the backend running?"))
+      .catch(() => setError("connection"))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    loadStats();
+  }, [loadStats]);
 
   if (loading) {
     return (
@@ -21,7 +28,11 @@ export default function DashboardPage() {
     );
   }
   if (error) {
-    return <div className="page"><div className="error-banner">{error}</div></div>;
+    return (
+      <div className="page">
+        <ConnectionError message="Cannot load dashboard" onRetry={loadStats} />
+      </div>
+    );
   }
 
   const maxFlag = stats?.top_red_flags?.[0]?.count || 1;
