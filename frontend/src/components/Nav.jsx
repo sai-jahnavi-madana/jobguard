@@ -56,7 +56,7 @@ export default function Nav() {
       </div>
 
       {/* Hamburger button */}
-      <button className="hamburger" onClick={() => setOpen(!open)}>
+      <button className="hamburger" style={{ marginLeft: "auto" }} onClick={() => setOpen(!open)}>
         {open ? "✕" : "☰"}
       </button>
 
