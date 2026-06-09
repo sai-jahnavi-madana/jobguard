@@ -1,52 +1,194 @@
 # JobGuard — Fake Job Alert Detection System
 
-> Detects fake job postings using machine learning with Telugu + English language support.
+> A free **community service** web app that helps job seekers spot fake job scams before they lose money or share personal details.
 
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [API Reference](#api-reference)
-- [Deployment](#deployment)
-- [Environment Variables](#environment-variables)
-- [License](#license)
+**Built by:** Sai Jahnavi Madana  
+**Repository:** [github.com/sai-jahnavi-madana/jobguard](https://github.com/sai-jahnavi-madana/jobguard)
 
 ---
 
 ## Overview
 
-JobGuard helps job seekers identify fraudulent job postings. Users paste any job description — in Telugu or English — and receive an instant **FAKE / REAL** verdict with a confidence score and a list of detected red flags.
+JobGuard is an AI-powered fake job alert detector with **Telugu + English** support. Paste any job posting from WhatsApp, Telegram, or email and get an instant **FAKE / REAL** verdict with confidence scores, red flag A, and bilingual explanations.
 
-The system uses a TF-IDF + Logistic Regression classifier trained on labeled job postings, combined with regex-based red flag detection and automatic Telugu-to-English translation.
+---
+
+## Who Is It For?
+
+| Audience | Use Case |
+|----------|----------|
+| Job seekers & students | Verify a job posting before applying |
+| Freshers | Identify scams promising easy money with no experience |
+| Telugu speakers | Analyse job alerts written in Telugu |
+| General public | Check forwarded WhatsApp job messages |
+| Community | Report undetected scams to protect others |
 
 ---
 
 ## Features
 
-- **Job Checker** — Paste a job posting and get a FAKE/REAL verdict with confidence score
-- **Dashboard** — Live statistics, top red flags, and city-wise scam reports
-- **Report** — Submit job postings that the model missed
-- **Authentication** — JWT-based login and signup
-- **Admin Panel** — Manage users, reports, and predictions (admin role required)
-- **Telugu Support** — Automatically translates Telugu postings before analysis
+### Check Job (Home)
+- Paste any job posting — Telugu or English
+- Instant **FAKE / REAL** verdict with confidence %
+- Red flag detection (registration fee, WhatsApp only, guaranteed income, etc.)
+- Bilingual results — switch between **English** and **తెలుగు**
+- Share results on **WhatsApp**
+- Sample fake/real jobs to try
+
+### Dashboard
+- Live stats: total checked, fake detected, real verified, scams reported
+- Top red flag phrases
+- City-wise scam reports
+- Detection rate chart
+
+### Report Scam
+- Submit fake jobs that JobGuard missed
+- Optional company name and city
+- Cybercrime helpline links (Dial **1930**, [cybercrime.gov.in](https://cybercrime.gov.in))
+
+### Login / Signup
+- JWT-based secure authentication
+- Show/hide password toggle
+- Password strength meter on signup
+- Check history saved when logged in
+
+### My Profile
+- Account details and member since date
+- Personal stats (checks, fake detected, reports submitted)
+- **My Check History** — last 50 job checks
+
+### About
+- Project mission and how it works
+- 6 safety tips in English + Telugu
+- Official cybercrime helpline links
+
+### Admin Panel (admin only)
+- Manage users, reports, and predictions
+- Update report status (pending / reviewed / resolved)
+- System overview statistics
+
+---
+
+## How It Works
+
+```
+User pastes job text
+        ↓
+Telugu detected? → Translate to English
+        ↓
+TF-IDF + ML Model → FAKE or REAL score
+        ↓
+Regex red flag patterns checked
+        ↓
+Final verdict + confidence + explanation
+        ↓
+Result saved to database → shown to user
+```
+
+**Red flags detected include:**
+- Pay to register / registration fee
+- Guaranteed high income (₹50,000/month)
+- WhatsApp only contact
+- No interview needed
+- Work from home guaranteed
+- Telugu patterns: రిజిస్ట్రేషన్ ఫీజు, అనుభవం అక్కరలేదు, etc.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React + Vite + React Router |
-| Backend | FastAPI + SQLite + SQLAlchemy |
-| Authentication | JWT (JSON Web Tokens) |
-| ML Model | TF-IDF Vectorizer + Logistic Regression |
-| NLP | deep-translator (Telugu → English), regex red flag rules |
-| Deployment | Render (Web Service + Static Site) |
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18, Vite, React Router, CSS |
+| **Backend** | FastAPI, Uvicorn, SQLAlchemy, SQLite |
+| **Auth** | JWT (python-jose), bcrypt password hashing |
+| **ML** | TF-IDF + Logistic Regression (scikit-learn) |
+| **NLP** | deep-translator (Telugu→English), langdetect, regex red flags |
+| **Deploy** | GitHub, Render (Web Service + Static Site) |
+
+---
+
+## Quick Start (Local)
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
+pip install -r requirements.txt
+python train_model.py
+uvicorn app.main:app --reload --port 8000
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open **http://localhost:5173**
+
+### Default Admin
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@jobguard.app` |
+| Password | `admin123` |
+
+Change via `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables.
+
+---
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/predict` | Classify a job posting |
+| `GET` | `/stats` | Dashboard statistics |
+| `POST` | `/report` | Submit a scam report |
+| `POST` | `/auth/signup` | Register a new user |
+| `POST` | `/auth/login` | Login |
+| `GET` | `/auth/me` | Current user profile |
+| `GET` | `/auth/me/stats` | User's personal stats |
+| `GET` | `/auth/me/history` | User's check history |
+| `GET` | `/admin/*` | Admin routes (JWT + admin role) |
+
+---
+
+## Deploy to Render
+
+1. Push this repo to GitHub
+2. Sign up at [render.com](https://render.com) with GitHub
+3. Create a **Blueprint** from `render.yaml`
+
+**Backend (`jobguard-api`)**
+
+| Setting | Value |
+|---------|-------|
+| Root | `backend` |
+| Build | `pip install -r requirements.txt && python train_model.py` |
+| Start | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| `CORS_ORIGINS` | Your frontend URL |
+| `ADMIN_PASSWORD` | Strong password |
+
+**Frontend (`jobguard-frontend`)**
+
+| Setting | Value |
+|---------|-------|
+| Root | `frontend` |
+| Build | `npm install && npm run build` |
+| Publish | `dist` |
+| `VITE_API_URL` | Your backend URL (e.g. `https://jobguard-api.onrender.com`) |
+
+Live site: **https://jobguard-frontend.onrender.com**
 
 ---
 
@@ -56,184 +198,33 @@ The system uses a TF-IDF + Logistic Regression classifier trained on labeled job
 jobguard/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI application entry point
-│   │   ├── auth.py              # JWT helpers and password hashing
-│   │   ├── models.py            # SQLAlchemy database models
-│   │   ├── ml/
-│   │   │   ├── classifier.py    # TF-IDF + Logistic Regression model
-│   │   │   ├── red_flags.py     # Regex-based red flag detection
-│   │   │   └── translator.py    # Telugu to English translation
-│   │   └── routers/
-│   │       ├── predict.py
-│   │       ├── stats.py
-│   │       ├── report.py
-│   │       ├── auth.py
-│   │       └── admin.py
+│   │   ├── main.py          # FastAPI entry point
+│   │   ├── auth.py          # JWT & password helpers
+│   │   ├── models.py        # SQLAlchemy models
+│   │   ├── schemas.py       # Pydantic request/response models
+│   │   ├── ml/              # Classifier, red flags, translator
+│   │   └── routers/         # API routes (auth, predict, reports, stats, admin)
 │   ├── train_model.py
 │   └── requirements.txt
-│
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Checker.jsx      # Job classifier UI
-│   │   │   ├── Dashboard.jsx    # Stats and charts
-│   │   │   ├── Report.jsx       # Submit scam report
-│   │   │   ├── Login.jsx
-│   │   │   └── Admin.jsx
-│   │   ├── components/
-│   │   │   └── Nav.jsx
-│   │   └── context/
-│   │       └── AuthContext.jsx
+│   │   ├── pages/           # Checker, Dashboard, Report, Login, Profile, About, Admin
+│   │   ├── components/      # Nav, Footer, ConnectionError, HelplineBanner
+│   │   ├── context/         # AuthContext
+│   │   └── utils/           # WhatsApp share, password strength
 │   └── package.json
-│
-└── render.yaml
+├── render.yaml
+└── README.md
 ```
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.9 or higher
-- Node.js 18 or higher
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/jobguard.git
-cd jobguard
-```
-
-### 2. Run the backend
-
-```bash
-cd backend
-
-# Create and activate virtual environment
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS / Linux
-
-# Install dependencies and train the model
-pip install -r requirements.txt
-python train_model.py
-
-# Start the server
-uvicorn app.main:app --reload --port 8000
-```
-
-Backend runs at `http://localhost:8000`  
-API docs available at `http://localhost:8000/docs`
-
-### 3. Run the frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs at `http://localhost:5173`
-
-### Default admin credentials
-
-| Field | Value |
-|---|---|
-| Email | `admin@jobguard.app` |
-| Password | `admin123` |
-
-Override these with the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables before deploying.
-
----
-
-## API Reference
-
-| Method | Endpoint | Auth Required | Description |
-|---|---|---|---|
-| POST | `/predict` | No | Classify a job posting |
-| GET | `/stats` | No | Get dashboard statistics |
-| POST | `/report` | JWT | Submit a scam report |
-| POST | `/auth/signup` | No | Register a new user |
-| POST | `/auth/login` | No | Login and receive a JWT |
-| GET | `/auth/me` | JWT | Get current user details |
-| GET | `/admin/*` | JWT + Admin | Admin-only routes |
-
-### Example request
-
-```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Urgent hiring! Work from home. No experience needed. Pay ₹500 registration fee."}'
-```
-
-### Example response
-
-```json
-{
-  "verdict": "FAKE",
-  "confidence": 0.94,
-  "red_flags": [
-    "pay registration fee",
-    "no experience needed",
-    "urgent hiring"
-  ]
-}
-```
-
----
-
-## Deployment
-
-This project deploys to [Render](https://render.com) using two services — a backend Web Service and a frontend Static Site.
-
-### Option A — Blueprint (recommended)
-
-1. Push the repository to GitHub
-2. Go to Render Dashboard → **New → Blueprint**
-3. Connect your repository — Render reads `render.yaml` and creates both services automatically
-
-### Option B — Manual setup
-
-**Backend — Web Service**
-
-| Setting | Value |
-|---|---|
-| Root Directory | `backend` |
-| Build Command | `pip install -r requirements.txt && python train_model.py` |
-| Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
-
-**Frontend — Static Site**
-
-| Setting | Value |
-|---|---|
-| Root Directory | `frontend` |
-| Build Command | `npm install && npm run build` |
-| Publish Directory | `dist` |
-
-After deploying, set `CORS_ORIGINS` on the backend to include your frontend URL.
-
----
-
-## Environment Variables
-
-### Backend
-
-| Variable | Required | Description |
-|---|---|---|
-| `SECRET_KEY` | Yes | Secret key for signing JWTs |
-| `CORS_ORIGINS` | Yes | Allowed frontend origin, e.g. `https://jobguard.onrender.com` |
-| `ADMIN_EMAIL` | No | Override default admin email |
-| `ADMIN_PASSWORD` | No | Override default admin password |
-
-### Frontend
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | Yes | Backend base URL, e.g. `https://jobguard-api.onrender.com` |
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+MIT
+
+---
+
+## Author
+
+**Sai Jahnavi Madana** — Community Service Project
