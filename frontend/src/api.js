@@ -16,6 +16,10 @@ async function request(path, options = {}) {
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem("jobguard_token");
+      window.location.href = "/login";
+    }
     const detail = data.detail;
     const msg = typeof detail === "string"
       ? detail
