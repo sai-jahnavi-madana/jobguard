@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { api } from "../api";
 import ConnectionError from "../components/ConnectionError";
 
@@ -37,6 +38,16 @@ export default function DashboardPage() {
 
   const maxFlag = stats?.top_red_flags?.[0]?.count || 1;
 
+  const pieData = [
+    { name: "Fake", value: stats?.fake_detected ?? 0 },
+    { name: "Real", value: stats?.real_detected ?? 0 },
+  ];
+
+  const barData = stats?.top_red_flags?.slice(0, 6).map((f) => ({
+    name: f.flag.length > 20 ? f.flag.slice(0, 20) + "…" : f.flag,
+    count: f.count,
+  })) || [];
+
   return (
     <div className="page-wide">
       <div style={{ marginBottom: 32 }}>
@@ -60,6 +71,62 @@ export default function DashboardPage() {
         <div className="stat-card">
           <div className="stat-value" style={{ color: "var(--warn)" }}>{stats?.reports_submitted ?? 0}</div>
           <div className="stat-label">Scams Reported</div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, marginBottom: 20 }}>
+
+        {/* Pie Chart */}
+        <div className="card">
+          <div className="section-title">Fake vs Real Ratio</div>
+          {stats?.total_checked > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  <Cell fill="#ff4757" />
+                  <Cell fill="#2ed573" />
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8 }}
+                  labelStyle={{ color: "var(--text)" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="empty-state"><div className="icon">🥧</div><div>No data yet.</div></div>
+          )}
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
+            <span style={{ fontSize: 12, color: "var(--fake)", fontFamily: "var(--mono)" }}>● Fake: {stats?.fake_detected ?? 0}</span>
+            <span style={{ fontSize: 12, color: "var(--real)", fontFamily: "var(--mono)" }}>● Real: {stats?.real_detected ?? 0}</span>
+          </div>
+        </div>
+
+        {/* Bar Chart */}
+        <div className="card">
+          <div className="section-title">Top Red Flags</div>
+          {barData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis type="number" tick={{ fill: "var(--muted)", fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: "var(--muted)", fontSize: 10 }} width={120} />
+                <Tooltip
+                  contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8 }}
+                />
+                <Bar dataKey="count" fill="#ffa502" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="empty-state"><div className="icon">📊</div><div>No data yet.</div></div>
+          )}
         </div>
       </div>
 
