@@ -63,6 +63,37 @@ const SAFETY_STEPS = {
     ],
   },
 };
+// --- Safety Recommendations based on verdict ---
+const SAFETY_STEPS = {
+  en: {
+    FAKE: [
+      "Do not pay any registration, deposit, or joining fee.",
+      "Never share Aadhaar, bank details, OTP, or passwords.",
+      "Search the company name + 'careers' on Google to verify.",
+      "Report this on cybercrime.gov.in or call Helpline 1930.",
+      "Block the contact and warn friends/family.",
+    ],
+    REAL: [
+      "Still confirm the offer letter via the company's official HR email.",
+      "Verify role, salary, and location in writing.",
+      "Call the HR directly if anything feels unclear.",
+    ],
+  },
+  te: {
+    FAKE: [
+      "ఎటువంటి registration / deposit / joining fee pay చేయకండి.",
+      "Aadhaar, bank details, OTP, passwords ఎవరికీ share చేయకండి.",
+      "Company name + 'careers' అని Google లో search చేసి verify చేయండి.",
+      "cybercrime.gov.in లో report చేయండి లేదా 1930 కి call చేయండి.",
+      "ఈ contact ని block చేసి, friends/family కి warn చేయండి.",
+    ],
+    REAL: [
+      "అయినా, offer letter ని company official HR email నుండి confirm చేసుకోండి.",
+      "Role, salary, location written గా తీసుకోండి.",
+      "ఏదైనా doubt ఉంటే HR కి direct call చేయండి.",
+    ],
+  },
+};
 
 // --- Trusted job portals ---
 // trustedPortals.js
